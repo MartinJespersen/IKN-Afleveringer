@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Generic;
 namespace tcp
 {
 	class file_client
@@ -33,7 +34,30 @@ namespace tcp
 			// TO DO Your own code
 			//file_client client = new file_client();
 		}
+		public string PathFile
+		{
+			get;
+			set;
+		} = "../../response";
 
+		public void saveToFile(String s)
+		{
+			if (!File.Exists(PathFile)){
+				File.Create(PathFile);
+				File.SetAttributes(PathFile, FileAttributes.Normal);
+                using (StreamWriter sw = new StreamWriter(PathFile))
+                {
+                    sw.Write(s);
+                }
+			}
+			else{
+
+                using (StreamWriter sw = new StreamWriter(PathFile,true))
+                {
+                    sw.Write(s);
+                }
+			}
+		}
 		/// <summary>
 		/// Receives the file.
 		/// </summary>
@@ -50,14 +74,26 @@ namespace tcp
             serverStream.Write(outStream, 0, outStream.Length);
 			serverStream.Flush();
 			byte[] inStream= new byte[BUFSIZE];
-			String fil = null;
+
+			//String fil = null;
 			int byteReceived = 0;
+			var listBytes = new List<byte>();
 			while ((byteReceived = serverStream.Read(inStream, 0, BUFSIZE)) > 0)
 			{
-				 
-				fil += Encoding.ASCII.GetString(inStream, 0, byteReceived);
+				listBytes.AddRange(inStream);
+				//bytes= new byte[byteReceived+bytes.Len](bytes+instream); 
+				//fil = Encoding.ASCII.GetString(inStream, 0, byteReceived);
+			
 			}
-            Console.WriteLine(fil);
+			int length = listBytes.Count;
+			var bytes = new byte[length];
+			for (int i = 0; i < length;i++)
+			{
+				bytes[i] = listBytes[i];
+			}
+			File.WriteAllBytes(PathFile, bytes);
+			Console.WriteLine("File received");
+            
             
 		}
 
@@ -69,25 +105,14 @@ namespace tcp
 		/// </param>
 		public static void Main (string[] args)
 		{
-			/*	file = "../../test.txt";
-				Console.WriteLine ("Client starts...");
-				TcpClient clientSocket = new TcpClient();
-				clientSocket.Connect("10.0.0.2",PORT);
-				NetworkStream serverStream = clientSocket.GetStream();
-				byte[] outStream = Encoding.ASCII.GetBytes(file);
-				serverStream.Write(outStream, 0, outStream.Length);
-				serverStream.Flush();*/
+			
 			var s = new string[2];
 			s[0] = "10.0.0.2";
-			s[1] = "../../test.txt";
+			s[1] = "../../kaj.jpg";
 			var file_obj = new file_client(s);
 			file_obj.receiveFile();
 
-		/*	byte[] inStream = new byte[BUFSIZE];
-            serverStream.Read(inStream, 0, BUFSIZE - 1);
-            String fil = Encoding.ASCII.GetString(inStream);
-            Console.WriteLine(fil);
-			Console.ReadLine();*/
+		
             
 
 		}
