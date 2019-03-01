@@ -17,7 +17,7 @@ namespace tcp
         /// </summary>
         const int BUFSIZE = 1000;
 
-        const string IP = "10.0.0.2";
+        const string IP = "10.0.0.1";
 
         static TcpListener serverSocket;
 
@@ -38,13 +38,13 @@ namespace tcp
             TcpClient clientSocket = default(TcpClient);
             serverSocket.Start();
             Console.WriteLine(" >> Server Started");
-            clientSocket = serverSocket.AcceptTcpClient();
-            Console.WriteLine(" >> Accept connection from client");
 
             while (true)
             {
                 try
-                {
+				{
+                    clientSocket = serverSocket.AcceptTcpClient();
+                    Console.WriteLine(" >> Accept connection from client");
                     string serverResponse;
                     byte[] sendBytes = new Byte[BUFSIZE];
                     requestCount = requestCount + 1;
@@ -63,8 +63,7 @@ namespace tcp
                     }
                     long fileSize = new System.IO.FileInfo(dataFromClient).Length;
                     sendFile(dataFromClient, fileSize, networkStream);
-                    networkStream.Write(sendBytes, 0, sendBytes.Length);
-
+					clientSocket.Close();               
                 }
                 catch (Exception ex)
                 {
@@ -99,6 +98,7 @@ namespace tcp
                 {
                     io.Write(buf, 0, bytesRead);
                 }
+				io.Flush();
             }
         }
 
