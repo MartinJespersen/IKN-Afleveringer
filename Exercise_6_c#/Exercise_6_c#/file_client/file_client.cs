@@ -11,13 +11,13 @@ namespace tcp
 		/// <summary>
 		/// The PORT.
 		/// </summary>
-		const int PORT = 9000;
+		private const int PORT = 9000;
 		/// <summary>
 		/// The BUFSIZE.
 		/// </summary>
-		const int BUFSIZE = 1000;
-		TcpClient client;
-		static string file;
+		private const int BUFSIZE = 1000;      
+		private TcpClient client;
+		private string file;
 		/// <summary>
 		/// Initializes a new instance of the <see cref="file_client"/> class.
 		/// </summary>
@@ -29,35 +29,11 @@ namespace tcp
 			file = args[1];
             Console.WriteLine("Client starts...");
             client = new TcpClient();
-            client.Connect(args[0], PORT);
-         
-			// TO DO Your own code
-			//file_client client = new file_client();
+            client.Connect(args[0], PORT);         
+            receiveFile();       
 		}
-		public string PathFile
-		{
-			get;
-			set;
-		} = "../../response";
+		public string PathFile{ get; set; } = "../../response";
 
-		public void saveToFile(String s)
-		{
-			if (!File.Exists(PathFile)){
-				File.Create(PathFile);
-				File.SetAttributes(PathFile, FileAttributes.Normal);
-                using (StreamWriter sw = new StreamWriter(PathFile))
-                {
-                    sw.Write(s);
-                }
-			}
-			else{
-
-                using (StreamWriter sw = new StreamWriter(PathFile,true))
-                {
-                    sw.Write(s);
-                }
-			}
-		}
 		/// <summary>
 		/// Receives the file.
 		/// </summary>
@@ -74,27 +50,30 @@ namespace tcp
             serverStream.Write(outStream, 0, outStream.Length);
 			serverStream.Flush();
 			byte[] inStream= new byte[BUFSIZE];
-
-			//String fil = null;
 			int byteReceived = 0;
-			var listBytes = new List<byte>();
+			if (File.Exists(PathFile))
+				File.Delete(PathFile);
+
 			while ((byteReceived = serverStream.Read(inStream, 0, BUFSIZE)) > 0)
 			{
-				listBytes.AddRange(inStream);
-				//bytes= new byte[byteReceived+bytes.Len](bytes+instream); 
-				//fil = Encoding.ASCII.GetString(inStream, 0, byteReceived);
-			
+				WriteToFile(inStream);
 			}
-			int length = listBytes.Count;
-			var bytes = new byte[length];
-			for (int i = 0; i < length;i++)
-			{
-				bytes[i] = listBytes[i];
-			}
-			File.WriteAllBytes(PathFile, bytes);
 			Console.WriteLine("File received");
-            
-            
+		}
+
+        private void WriteToFile(byte[] bytes)
+		{
+            try
+            {
+				using (var fs = new FileStream(PathFile,FileMode.Append))
+                {
+					fs.Write(bytes, 0, bytes.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caught in process: {0}", ex);
+            }
 		}
 
 		/// <summary>
@@ -105,16 +84,10 @@ namespace tcp
 		/// </param>
 		public static void Main (string[] args)
 		{
-			
 			var s = new string[2];
-			s[0] = "10.0.0.2";
+			s[0] = "10.0.0.1";
 			s[1] = "../../kaj.jpg";
-			var file_obj = new file_client(s);
-			file_obj.receiveFile();
-
-		
-            
-
+			var file_obj = new file_client(s);  
 		}
 	}
 }
