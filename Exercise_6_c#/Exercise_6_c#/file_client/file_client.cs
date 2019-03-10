@@ -53,12 +53,28 @@ namespace tcp
 			int byteReceived = 0;
 			if (File.Exists(PathFile))
 				File.Delete(PathFile);
-
-			while ((byteReceived = serverStream.Read(inStream, 0, BUFSIZE)) > 0)
+			//int count = 0;
+			//int sizeOfMes = 0;
+			byteReceived = serverStream.Read(inStream, 0, BUFSIZE);
+			int fileSize = BitConverter.ToInt32(inStream,0);
+			if (fileSize == 0)
 			{
-				WriteToFile(inStream);
+				byteReceived = serverStream.Read(inStream, 0, BUFSIZE);
+				string error = System.Text.Encoding.ASCII.GetString(inStream, 0, byteReceived);
+				Console.WriteLine(error);
 			}
-			Console.WriteLine("File received");
+			else
+			{
+				while ((byteReceived = serverStream.Read(inStream, 0, BUFSIZE)) > 0)
+				{
+					//if (byteReceived != BUFSIZE)
+						//sizeOfMes = byteReceived;
+					WriteToFile(inStream);
+					//count++;
+				}
+				//sizeOfMes += count * BUFSIZE;
+                Console.WriteLine($"File received with {fileSize} bytes");
+			}
 		}
 
         private void WriteToFile(byte[] bytes)
@@ -85,9 +101,9 @@ namespace tcp
 		public static void Main (string[] args)
 		{
 			var s = new string[2];
-			s[0] = "10.0.0.1";
-			s[1] = "../../kaj.jpg";
-			var file_obj = new file_client(s);  
+			//s[0] = "10.0.0.2";
+			//s[1] = "../../kaj.jpg";
+			var file_obj = new file_client(args);  
 		}
 	}
 }
