@@ -17,7 +17,7 @@ namespace tcp
         /// </summary>
         const int BUFSIZE = 1000;
 
-        const string IP = "10.0.0.1";
+        const string IP = "10.0.0.2";
 
         static TcpListener serverSocket;
 
@@ -53,17 +53,26 @@ namespace tcp
 					int bytesRec = networkStream.Read(bytesFrom, 0, bytesFrom.Length);
                     string dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom,0,bytesRec);
 					Console.WriteLine($"string sent: {dataFromClient} ");
-                    if (!File.Exists(dataFromClient))
-                    {
-                        serverResponse = "Error: File wasn't found";
-                        sendBytes = Encoding.ASCII.GetBytes(serverResponse);
-                        networkStream.Write(sendBytes, 0, sendBytes.Length);
-                        networkStream.Flush();
-                        continue;
-                    }
-                    long fileSize = new System.IO.FileInfo(dataFromClient).Length;
-                    sendFile(dataFromClient, fileSize, networkStream);
-					clientSocket.Close();               
+					if (!File.Exists(dataFromClient))
+					{
+
+						sendBytes = BitConverter.GetBytes(0);
+
+						networkStream.Write(sendBytes, 0, sendBytes.Length);
+						sendBytes = Encoding.ASCII.GetBytes("No File found in server");
+						networkStream.Write(sendBytes, 0, sendBytes.Length);
+
+						networkStream.Flush();
+
+						continue;
+					}
+					else
+					{
+						long fileSize = new System.IO.FileInfo(dataFromClient).Length;
+						sendFile(dataFromClient, fileSize, networkStream);
+
+					}
+					clientSocket.Close();
                 }
                 catch (Exception ex)
                 {
@@ -92,12 +101,18 @@ namespace tcp
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
-                byte[] buf = new byte[BUFSIZE];
+                byte[] mesBuf = new byte[BUFSIZE];
+				byte[] sizeBuf = new byte[BUFSIZE];
+				sizeBuf = BitConverter.GetBytes(fileSize);
+				io.Write(sizeBuf, 0, sizeBuf.Length);
+				io.Flush();
                 int bytesRead = 0;
-				while ((bytesRead = fs.Read(buf, 0, BUFSIZE)) > 0)
+				while ((bytesRead = fs.Read(mesBuf, 0, BUFSIZE)) > 0)
                 {
-                    io.Write(buf, 0, bytesRead);
+                    io.Write(mesBuf, 0, bytesRead);
                 }
+				//byte[] eof = Encoding.ASCII.GetBytes(Convert.ToString(-1));
+				//io.Write(eof, 0, eof.Length);
 				io.Flush();
             }
         }
