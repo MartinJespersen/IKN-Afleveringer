@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Generic;
 namespace tcp
 {
 	class file_client
@@ -10,13 +11,13 @@ namespace tcp
 		/// <summary>
 		/// The PORT.
 		/// </summary>
-		const int PORT = 9000;
+		private const int PORT = 9000;
 		/// <summary>
 		/// The BUFSIZE.
 		/// </summary>
-		const int BUFSIZE = 1000;
-		TcpClient client;
-		static string file;
+		private const int BUFSIZE = 1000;      
+		private TcpClient client;
+		private string file;
 		/// <summary>
 		/// Initializes a new instance of the <see cref="file_client"/> class.
 		/// </summary>
@@ -28,11 +29,10 @@ namespace tcp
 			file = args[1];
             Console.WriteLine("Client starts...");
             client = new TcpClient();
-            client.Connect(args[0], PORT);
-         
-			// TO DO Your own code
-			//file_client client = new file_client();
+            client.Connect(args[0], PORT);         
+            receiveFile();       
 		}
+		public string PathFile{ get; set; } = "../../response";
 
 		/// <summary>
 		/// Receives the file.
@@ -50,15 +50,30 @@ namespace tcp
             serverStream.Write(outStream, 0, outStream.Length);
 			serverStream.Flush();
 			byte[] inStream= new byte[BUFSIZE];
-			String fil = null;
 			int byteReceived = 0;
+			if (File.Exists(PathFile))
+				File.Delete(PathFile);
+
 			while ((byteReceived = serverStream.Read(inStream, 0, BUFSIZE)) > 0)
 			{
-				 
-				fil += Encoding.ASCII.GetString(inStream, 0, byteReceived);
+				WriteToFile(inStream);
 			}
-            Console.WriteLine(fil);
-            
+			Console.WriteLine("File received");
+		}
+
+        private void WriteToFile(byte[] bytes)
+		{
+            try
+            {
+				using (var fs = new FileStream(PathFile,FileMode.Append))
+                {
+					fs.Write(bytes, 0, bytes.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caught in process: {0}", ex);
+            }
 		}
 
 		/// <summary>
@@ -69,27 +84,10 @@ namespace tcp
 		/// </param>
 		public static void Main (string[] args)
 		{
-			/*	file = "../../test.txt";
-				Console.WriteLine ("Client starts...");
-				TcpClient clientSocket = new TcpClient();
-				clientSocket.Connect("10.0.0.2",PORT);
-				NetworkStream serverStream = clientSocket.GetStream();
-				byte[] outStream = Encoding.ASCII.GetBytes(file);
-				serverStream.Write(outStream, 0, outStream.Length);
-				serverStream.Flush();*/
 			var s = new string[2];
-			s[0] = "10.0.0.2";
-			s[1] = "../../test.txt";
-			var file_obj = new file_client(s);
-			file_obj.receiveFile();
-
-		/*	byte[] inStream = new byte[BUFSIZE];
-            serverStream.Read(inStream, 0, BUFSIZE - 1);
-            String fil = Encoding.ASCII.GetString(inStream);
-            Console.WriteLine(fil);
-			Console.ReadLine();*/
-            
-
+			s[0] = "10.0.0.1";
+			s[1] = "../../kaj.jpg";
+			var file_obj = new file_client(s);  
 		}
 	}
 }
