@@ -16,24 +16,24 @@ namespace tcp
         /// The BUFSIZE
         /// </summary>
         const int BUFSIZE = 1000;
-
+        /// <summary>
+        /// The IP of the Server
+        /// </summary>
         const string IP = "10.0.0.2";
-
-        static TcpListener serverSocket;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="file_server"/> class.
-        /// Opretter en socket.
-        /// Venter på en connect fra en klient.
-        /// Modtager filnavn
-        /// Finder filstørrelsen
-        /// Kalder metoden sendFile
-        /// Lukker socketen og programmet
+        /// Create a socket.
+        /// Wait for client to connect.
+        /// Receive filename
+        /// Find filesize
+        /// Call send file
+        /// Close socket
         /// </summary>
         private file_server()
         {
             IPAddress ipAddress = IPAddress.Parse(IP);
-            serverSocket = new TcpListener(ipAddress, PORT);
+            var serverSocket = new TcpListener(ipAddress, PORT);
             int requestCount = 0;
             TcpClient clientSocket = default(TcpClient);
             serverSocket.Start();
@@ -45,7 +45,6 @@ namespace tcp
 				{
                     clientSocket = serverSocket.AcceptTcpClient();
                     Console.WriteLine(" >> Accept connection from client");
-                    string serverResponse;
                     byte[] sendBytes = new Byte[BUFSIZE];
                     requestCount = requestCount + 1;
                     NetworkStream networkStream = clientSocket.GetStream();
@@ -66,13 +65,10 @@ namespace tcp
 
 						continue;
 					}
-					else
-					{
-						long fileSize = new System.IO.FileInfo(dataFromClient).Length;
-						sendFile(dataFromClient, fileSize, networkStream);
 
-					}
-					clientSocket.Close();
+                    long fileSize = new System.IO.FileInfo(dataFromClient).Length;
+                    sendFile(dataFromClient, fileSize, networkStream);
+                    clientSocket.Close();
                 }
                 catch (Exception ex)
                 {
@@ -88,15 +84,9 @@ namespace tcp
         /// <summary>
         /// Sends the file.
         /// </summary>
-        /// <param name='fileName'>
-        /// The filename.
-        /// </param>
-        /// <param name='fileSize'>
-        /// The filesize.
-        /// </param>
-        /// <param name='io'>
-        /// Network stream for writing to the client.
-        /// </param>
+        /// <param name='fileName'> The filename.</param>
+        /// <param name='fileSize'> The filesize.</param>
+        /// <param name='io'> Network stream for writing to the client.</param>
         private void sendFile(String fileName, long fileSize, NetworkStream io)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
@@ -120,13 +110,11 @@ namespace tcp
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
-        /// <param name='args'>
-        /// The command-line arguments.
-        /// </param>
+        /// <param name='args'>The command-line arguments</param>
         public static void Main(string[] args)
         {
             Console.WriteLine("Server starts...");
-            file_server s=new file_server();
+            file_server s = new file_server();
         }
     }
 }
