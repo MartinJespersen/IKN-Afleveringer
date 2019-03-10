@@ -1,7 +1,7 @@
 ﻿<Properties StartupConfiguration="{16353B66-2B66-4A17-800B-15BA71BC47B3}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="ServerSideSocket/Program.cs">
     <Files>
-      <File FileName="ServerSideSocket/Program.cs" Line="54" Column="1" />
+      <File FileName="ServerSideSocket/Program.cs" Line="39" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
@@ -9,6 +9,9 @@
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.ItemProperties.ServerSideSocket PreferredExecutionTarget="MonoDevelop.Default" />
+  <Debugger.DebugSourceFolders>
+    <String>/home/ikn/Ikn/IKN-Afleveringer</String>
+  </Debugger.DebugSourceFolders>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
 </Properties>

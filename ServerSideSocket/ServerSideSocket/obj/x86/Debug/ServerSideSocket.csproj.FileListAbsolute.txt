@@ -4,3 +4,9 @@
 /home/ikn/Projects/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.csproj.CoreCompileInputs.cache
 /home/ikn/Projects/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.exe
 /home/ikn/Projects/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.pdb
+/home/ikn/Ikn/IKN-Afleveringer/ServerSideSocket/ServerSideSocket/bin/Debug/ServerSideSocket.exe
+/home/ikn/Ikn/IKN-Afleveringer/ServerSideSocket/ServerSideSocket/bin/Debug/ServerSideSocket.pdb
+/home/ikn/Ikn/IKN-Afleveringer/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.csprojResolveAssemblyReference.cache
+/home/ikn/Ikn/IKN-Afleveringer/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.csproj.CoreCompileInputs.cache
+/home/ikn/Ikn/IKN-Afleveringer/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.exe
+/home/ikn/Ikn/IKN-Afleveringer/ServerSideSocket/ServerSideSocket/obj/x86/Debug/ServerSideSocket.pdb
