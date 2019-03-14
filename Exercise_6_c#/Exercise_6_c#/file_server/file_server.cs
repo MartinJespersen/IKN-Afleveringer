@@ -38,7 +38,7 @@ namespace tcp
             TcpClient clientSocket = default(TcpClient);
             serverSocket.Start();
             Console.WriteLine(" >> Server Started");
-
+            
             while (true)
             {
                 try
@@ -51,10 +51,11 @@ namespace tcp
                     byte[] bytesFrom = new byte[10024];
                     int bytesRec = networkStream.Read(bytesFrom, 0, bytesFrom.Length);
                     string dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom, 0, bytesRec);
-                    Console.WriteLine($"string sent: {dataFromClient} ");               
+                    Console.WriteLine($"string received from client: {dataFromClient} ");               
 					long fileSize = File.Exists(dataFromClient) ? new System.IO.FileInfo(dataFromClient).Length : 0;
-                    sendBytes = BitConverter.GetBytes(fileSize);
-                    networkStream.Write(sendBytes, 0, sendBytes.Length);
+                    BitConverter.GetBytes(fileSize).CopyTo(sendBytes,0);
+                    networkStream.Write(sendBytes, 0, BUFSIZE);
+					networkStream.Flush();
 					if (fileSize == 0)
                     {
 
@@ -65,7 +66,8 @@ namespace tcp
                     }
 					else
 					{                  
-                        sendFile(dataFromClient, fileSize, networkStream);
+						sendFile(dataFromClient, networkStream);
+                        networkStream.Flush();
 					}               
                 }
                 catch (Exception ex)
@@ -88,21 +90,19 @@ namespace tcp
         /// <param name='fileName'> The filename.</param>
         /// <param name='fileSize'> The filesize.</param>
         /// <param name='io'> Network stream for writing to the client.</param>
-        private void sendFile(String fileName, long fileSize, NetworkStream io)
+        private void sendFile(String fileName, NetworkStream io)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
                 byte[] mesBuf = new byte[BUFSIZE];
-                byte[] sizeBuf = new byte[BUFSIZE];
-                sizeBuf = BitConverter.GetBytes(fileSize);
-                io.Write(sizeBuf, 0, sizeBuf.Length);
-                io.Flush();
                 int bytesRead = 0;
+				int bytesSend = 0;
                 while ((bytesRead = fs.Read(mesBuf, 0, BUFSIZE)) > 0)
                 {
-                    io.Write(mesBuf, 0, bytesRead);
-				}            
-                io.Flush();
+					io.Write(mesBuf, 0, bytesRead);
+                    bytesSend += bytesRead;
+				}
+				Console.WriteLine($"Bytes send: {bytesSend}");
             }
         }
 
