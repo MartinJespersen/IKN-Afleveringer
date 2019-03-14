@@ -51,33 +51,34 @@ namespace tcp
                     byte[] bytesFrom = new byte[10024];
                     int bytesRec = networkStream.Read(bytesFrom, 0, bytesFrom.Length);
                     string dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom, 0, bytesRec);
-                    Console.WriteLine($"string sent: {dataFromClient} ");
-                    if (!File.Exists(dataFromClient))
+                    Console.WriteLine($"string sent: {dataFromClient} ");               
+					long fileSize = File.Exists(dataFromClient) ? new System.IO.FileInfo(dataFromClient).Length : 0;
+                    sendBytes = BitConverter.GetBytes(fileSize);
+                    networkStream.Write(sendBytes, 0, sendBytes.Length);
+					if (fileSize == 0)
                     {
 
-                        sendBytes = BitConverter.GetBytes(0);
-
-                        networkStream.Write(sendBytes, 0, sendBytes.Length);
                         sendBytes = Encoding.ASCII.GetBytes("No File found in server");
                         networkStream.Write(sendBytes, 0, sendBytes.Length);
 
                         networkStream.Flush();
-
-                        continue;
                     }
-
-                    long fileSize = new System.IO.FileInfo(dataFromClient).Length;
-                    sendFile(dataFromClient, fileSize, networkStream);
-                    clientSocket.Close();
+					else
+					{                  
+                        sendFile(dataFromClient, fileSize, networkStream);
+					}               
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
-                    clientSocket.Close();
                     serverSocket.Stop();
                     Console.WriteLine(" >> exit");
                     Console.ReadLine();
                 }
+				finally
+				{
+					clientSocket.Close();
+				}
             }
         }
 
@@ -100,9 +101,7 @@ namespace tcp
                 while ((bytesRead = fs.Read(mesBuf, 0, BUFSIZE)) > 0)
                 {
                     io.Write(mesBuf, 0, bytesRead);
-                }
-                //byte[] eof = Encoding.ASCII.GetBytes(Convert.ToString(-1));
-                //io.Write(eof, 0, eof.Length);
+				}            
                 io.Flush();
             }
         }

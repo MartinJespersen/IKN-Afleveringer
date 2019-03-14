@@ -14,3 +14,11 @@
 /home/ikn/IKN2/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.csproj.CoreCompileInputs.cache
 /home/ikn/IKN2/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.exe
 /home/ikn/IKN2/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.pdb
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/bin/Debug/file_server.exe
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/bin/Debug/file_server.pdb
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/bin/Debug/LIB.dll
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/bin/Debug/LIB.pdb
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.csprojResolveAssemblyReference.cache
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.csproj.CoreCompileInputs.cache
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.exe
+/home/ikn/Ikn/IKN-Afleveringer/Exercise_6_c#/Exercise_6_c#/file_server/obj/x86/Debug/file_server.pdb
