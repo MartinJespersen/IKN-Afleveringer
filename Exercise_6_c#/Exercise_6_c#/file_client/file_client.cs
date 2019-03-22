@@ -26,10 +26,10 @@ namespace tcp
         /// </param>
         private file_client(string[] args)
         {
-            file = "../../kaj.png";
+            file = args[0];
             Console.WriteLine("Client starts...");
             client = new TcpClient();
-            client.Connect("10.0.0.2", PORT);
+            client.Connect(args[1], PORT);
             receiveFile();
         }
         public string PathFile { get; set; } = "../../response";
